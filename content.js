@@ -1,280 +1,477 @@
 // MultiLang Keyboard - Browser Extension
-(function() {
+(function () {
   'use strict';
-  
+
   if (window.multilangKeyboardLoaded) return;
   window.multilangKeyboardLoaded = true;
 
+  // ─── Layouts ────────────────────────────────────────────────────────────────
   const LAYOUTS = {
     english: {
       name: 'English',
-      normal: [['`','1','2','3','4','5','6','7','8','9','0','-','=','←'],['q','w','e','r','t','y','u','i','o','p','[',']'],['a','s','d','f','g','h','j','k','l',';','\'','Enter'],['Shift','z','x','c','v','b','n','m',',','.','/','Shift'],['Space']],
-      shift: [['~','!','@','#','$','%','^','&','*','(',')','_','+','←'],['Q','W','E','R','T','Y','U','I','O','P','{','}'],['A','S','D','F','G','H','J','K','L',':','"','Enter'],['Shift','Z','X','C','V','B','N','M','<','>','?','Shift'],['Space']]
+      normal: [['`','1','2','3','4','5','6','7','8','9','0','-','=','←'],['q','w','e','r','t','y','u','i','o','p','[',']'],['a','s','d','f','g','h','j','k','l',';',"'",'Enter'],['Shift','z','x','c','v','b','n','m',',','.','/','Shift'],['Space']],
+      shift:  [['~','!','@','#','$','%','^','&','*','(',')','_','+','←'],['Q','W','E','R','T','Y','U','I','O','P','{','}'],['A','S','D','F','G','H','J','K','L',':','"','Enter'],['Shift','Z','X','C','V','B','N','M','<','>','?','Shift'],['Space']]
     },
     hindi: {
       name: 'हिन्दी',
       normal: [['ॊ','१','२','३','४','५','६','७','८','९','०','-','ृ','←'],['ौ','ै','ा','ी','ू','ब','ह','ग','द','ज','ड','़'],['ो','े','्','ि','ु','प','र','क','त','च','ट','Enter'],['Shift','ं','म','न','व','ल','स',',','.','य','Shift'],['Space']],
-      shift: [['ऒ','ऍ','ॅ','्र','र्द','ट्ठ','ण','घ','ङ','झ','़','ः','←'],['औ','ऐ','आ','ई','ऊ','भ','ः','ग','ध','झ','ढ'],['ओ','ए','अ','इ','उ','फ','ऱ','ख','थ','छ','ठ','Enter'],['Shift','ँ','म','न','व','ल','श','ष','।','य','Shift'],['Space']]
+      shift:  [['ऒ','ऍ','ॅ','्र','र्द','ट्ठ','ण','घ','ङ','झ','़','ः','←'],['औ','ऐ','आ','ई','ऊ','भ','ः','ग','ध','झ','ढ'],['ओ','ए','अ','इ','उ','फ','ऱ','ख','थ','छ','ठ','Enter'],['Shift','ँ','म','न','व','ल','श','ष','।','य','Shift'],['Space']]
     },
     marathi: {
       name: 'मराठी',
       normal: [['ॊ','१','२','३','४','५','६','७','८','९','०','-','ृ','←'],['ौ','ै','ा','ी','ू','ब','ह','ग','द','ज','ड','़'],['ो','े','्','ि','ु','प','र','क','त','च','ट','Enter'],['Shift','ळ','ं','म','न','व','ल','स',',','.','य','Shift'],['Space']],
-      shift: [['ऒ','ऍ','ॅ','्र','र्द','ट्ठ','ण','घ','ङ','झ','़','ः','←'],['औ','ऐ','आ','ई','ऊ','भ','ः','ग','ध','झ','ढ'],['ओ','ए','अ','इ','उ','फ','ऱ','ख','थ','छ','ठ','Enter'],['Shift','ऴ','ं','म','न','व','ल','श','ष','।','य','Shift'],['Space']]
+      shift:  [['ऒ','ऍ','ॅ','्र','र्द','ट्ठ','ण','घ','ङ','झ','़','ः','←'],['औ','ऐ','आ','ई','ऊ','भ','ः','ग','ध','झ','ढ'],['ओ','ए','अ','इ','उ','फ','ऱ','ख','थ','छ','ठ','Enter'],['Shift','ऴ','ं','म','न','व','ल','श','ष','।','य','Shift'],['Space']]
     },
     telugu: {
       name: 'తెలుగు',
       normal: [['ొ','౧','౨','౩','౪','౫','౬','౭','౮','౯','౦','-','ృ','←'],['ౌ','ై','ా','ీ','ూ','బ','హ','గ','ద','జ','డ','ఞ'],['ో','ే','్','ి','ు','ప','ర','క','త','చ','ట','Enter'],['Shift','ె','ం','మ','న','వ','ల','స',',','.','య','Shift'],['Space']],
-      shift: [['ఒ','ఎ','ఏ','ర్','జ్ఞ','త్ర','క్ష','శ్ర','(','(','ః','ఋ','←'],['ఔ','ఐ','ఆ','ఈ','ఊ','భ','ఙ','ఘ','ధ','ఝ','ఢ'],['ఓ','ఏ','అ','ఇ','ఉ','ఫ','ఱ','ఖ','థ','ఛ','ఠ','Enter'],['Shift','ఁ','మ','న','వ','ళ','శ','ష','।','య','Shift'],['Space']]
+      shift:  [['ఒ','ఎ','ఏ','ర్','జ్ఞ','త్ర','క్ష','శ్ర','(','(','ః','ఋ','←'],['ఔ','ఐ','ఆ','ఈ','ఊ','భ','ఙ','ఘ','ధ','ఝ','ఢ'],['ఓ','ఏ','అ','ఇ','ఉ','ఫ','ఱ','ఖ','థ','ఛ','ఠ','Enter'],['Shift','ఁ','మ','న','వ','ళ','శ','ష','।','య','Shift'],['Space']]
     },
     tamil: {
       name: 'தமிழ்',
       normal: [['ொ','௧','௨','௩','௪','௫','௬','௭','௮','௯','௦','-','்','←'],['ௌ','ை','ா','ீ','ூ','ப','ஹ','க','த','ஜ','ட','ஞ'],['ோ','ே','்','ி','ு','ப','ர','க','த','ச','ட','Enter'],['Shift','ெ','ஂ','ம','ந','வ','ல','ச',',','.','ய','Shift'],['Space']],
-      shift: [['ஒ','எ','ஏ','ற்','க்ஷ','ஸ்','ஷ்','ஸ்ரீ','(','(',':','ஃ','←'],['ஔ','ஐ','ஆ','ஈ','ஊ','ப','ஹ','க','த','ஜ','ட'],['ஓ','ஏ','அ','இ','உ','ப','ற','க','த','ச','ட','Enter'],['Shift','ஂ','ம','ன','வ','ள','ஸ','ஷ','।','ய','Shift'],['Space']]
+      shift:  [['ஒ','எ','ஏ','ற்','க்ஷ','ஸ்','ஷ்','ஸ்ரீ','(','(',':','ஃ','←'],['ஔ','ஐ','ஆ','ஈ','ஊ','ப','ஹ','க','த','ஜ','ட'],['ஓ','ஏ','அ','இ','உ','ப','ற','க','த','ச','ட','Enter'],['Shift','ஂ','ம','ன','வ','ள','ஸ','ஷ','।','ய','Shift'],['Space']]
     },
     bengali: {
       name: 'বাংলা',
       normal: [['্','১','২','৩','৪','৫','৬','৭','৮','৯','০','-','ৃ','←'],['ৌ','ৈ','া','ী','ূ','ব','হ','গ','দ','জ','ড','়'],['ো','ে','্','ি','ু','প','র','ক','ত','চ','ট','Enter'],['Shift','ঁ','ম','ন','ভ','ল','স',',','.','য','Shift'],['Space']],
-      shift: [['ঔ','ঐ','আ','ঈ','ঊ','ভ','ঃ','গ','ধ','ঝ','ঢ','←'],['ও','এ','অ','ই','উ','ফ','র','খ','থ','ছ','ঠ','Enter'],['Shift','ঁ','ম','ন','ভ','ল','শ','ষ','।','য়','Shift'],['Space']]
+      shift:  [['ঔ','ঐ','আ','ঈ','ঊ','ভ','ঃ','গ','ধ','ঝ','ঢ','←'],['ও','এ','অ','ই','উ','ফ','র','খ','থ','ছ','ঠ','Enter'],['Shift','ঁ','ম','ন','ভ','ল','শ','ষ','।','য়','Shift'],['Space']]
     }
   };
 
-  let currentInput = null;
-  let currentLang = 'english';
-  let isShift = false;
+  // ─── State ───────────────────────────────────────────────────────────────────
+  let currentInput = null; // last focused input/textarea/contenteditable
+  let currentLang  = 'english';
+  let isShift      = false;
+  let panelX = null, panelY = null;
+  let panelW = null, panelH = null;
 
-  // Create floating toggle button
-  function createFloatingButton() {
-    const btn = document.createElement('div');
-    btn.id = 'mlk-floating-btn';
-    btn.innerHTML = '⌨️';
-    btn.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      cursor: pointer;
-      z-index: 2147483647;
-      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
-      transition: transform 0.3s, opacity 0.3s;
-      opacity: 0;
-      pointer-events: none;
-    `;
-    
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleKeyboard();
-    });
-    
-    document.body.appendChild(btn);
-    return btn;
+  // ─── Floating button ─────────────────────────────────────────────────────────
+  const floatingBtn = document.createElement('div');
+  floatingBtn.id = 'mlk-floating-btn';
+  floatingBtn.innerHTML = '⌨️';
+  floatingBtn.classList.add('mlk-btn-visible');
+  floatingBtn.addEventListener('mousedown', (e) => e.preventDefault()); // don't blur active input
+  floatingBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleKeyboard(); });
+  document.body.appendChild(floatingBtn);
+
+  // ─── Panel ───────────────────────────────────────────────────────────────────
+  const panel = document.createElement('div');
+  panel.id = 'mlk-keyboard-panel';
+  document.body.appendChild(panel);
+
+  // ─── Focus tracking ──────────────────────────────────────────────────────────
+  function isInputEl(el) {
+    return el && el.matches('input, textarea, [contenteditable="true"], [contenteditable=""]');
   }
 
-  const floatingBtn = createFloatingButton();
+  function activeIsInFrame() {
+    // When focus moves into an iframe, document.activeElement is the iframe element itself
+    const a = document.activeElement;
+    return a && a.tagName === 'IFRAME';
+  }
 
-  // Show/hide floating button on input focus
   document.addEventListener('focusin', (e) => {
-    if (e.target.matches('input, textarea, [contenteditable="true"]')) {
+    if (isInputEl(e.target)) {
+      if (currentInput && currentInput !== e.target) {
+        currentInput.classList.remove('mlk-active-target');
+      }
       currentInput = e.target;
-      floatingBtn.style.opacity = '1';
-      floatingBtn.style.pointerEvents = 'all';
+      currentInput.classList.add('mlk-active-target');
     }
   });
 
-  document.addEventListener('focusout', (e) => {
+  document.addEventListener('focusout', () => {
     setTimeout(() => {
-      if (!document.activeElement.matches('input, textarea, [contenteditable="true"]')) {
-        floatingBtn.style.opacity = '0';
-        floatingBtn.style.pointerEvents = 'none';
-      }
+      const active = document.activeElement;
+      if (panel.contains(active)) return;
+      if (isInputEl(active)) return;
+      if (activeIsInFrame()) return;
+      // Panel is open — never clear currentInput while keyboard is showing
+      if (panel.classList.contains('mlk-panel-open') || panel.classList.contains('mlk-panel-closing')) return;
+      if (currentInput) currentInput.classList.remove('mlk-active-target');
+      currentInput = null;
     }, 200);
   });
 
-  // Create keyboard panel
-  function createKeyboardPanel() {
-    const panel = document.createElement('div');
-    panel.id = 'mlk-keyboard-panel';
-    panel.style.cssText = `
-      position: fixed;
-      bottom: 90px;
-      right: 20px;
-      width: 360px;
-      max-width: 90vw;
-      background: #1a1a2e;
-      border-radius: 20px;
-      padding: 20px;
-      z-index: 2147483646;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      display: none;
-      font-family: 'Segoe UI', sans-serif;
-    `;
-    
-    document.body.appendChild(panel);
-    return panel;
+  // ─── Panel open / close ──────────────────────────────────────────────────────
+  function openPanel() {
+    // Reset any stuck closing state
+    panel.classList.remove('mlk-panel-closing');
+
+    // Restore saved position
+    if (panelX !== null) {
+      panel.style.left   = panelX + 'px';
+      panel.style.top    = panelY + 'px';
+      panel.style.right  = 'auto';
+      panel.style.bottom = 'auto';
+    } else {
+      panel.style.left = '';
+      panel.style.top = '';
+      panel.style.right = '';
+      panel.style.bottom = '';
+    }
+    // Restore saved size
+    if (panelW !== null) {
+      panel.style.width  = panelW + 'px';
+      panel.style.height = panelH + 'px';
+    } else {
+      panel.style.width = '';
+      panel.style.height = '';
+    }
+    // Build first, then show — so layout is ready when animation starts
+    buildKeyboard();
+    panel.classList.add('mlk-panel-open');
+    floatingBtn.classList.add('mlk-btn-pressed');
   }
 
-  const panel = createKeyboardPanel();
+  function closePanel() {
+    if (!panel.classList.contains('mlk-panel-open')) return;
+    // Save size before closing (user may have resized)
+    const w = panel.offsetWidth, h = panel.offsetHeight;
+    if (w > 0) { panelW = w; panelH = h; }
+    savePanelState();
+
+    panel.classList.add('mlk-panel-closing');
+    const done = () => {
+      panel.classList.remove('mlk-panel-open', 'mlk-panel-closing');
+      const active = document.activeElement;
+      if (!active || !active.matches('input, textarea, [contenteditable="true"]')) {
+        if (currentInput) currentInput.classList.remove('mlk-active-target');
+        currentInput = null;
+      }
+    };
+    panel.addEventListener('animationend', done, { once: true });
+    setTimeout(() => { if (panel.classList.contains('mlk-panel-closing')) done(); }, 250);
+    floatingBtn.classList.remove('mlk-btn-pressed');
+  }
 
   function toggleKeyboard() {
-    if (panel.style.display === 'block') {
-      panel.style.display = 'none';
-      floatingBtn.style.transform = 'scale(1)';
+    if (panel.classList.contains('mlk-panel-open') || panel.classList.contains('mlk-panel-closing')) {
+      closePanel();
     } else {
-      panel.style.display = 'block';
-      floatingBtn.style.transform = 'scale(0.9)';
-      renderKeyboard();
+      openPanel();
     }
   }
 
-  function renderKeyboard() {
-    const layout = LAYOUTS[currentLang];
-    const rows = isShift ? layout.shift : layout.normal;
-    
-    panel.innerHTML = `
-      <div style="display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;">
-        ${Object.keys(LAYOUTS).map(l => `
-          <button data-lang="${l}" style="
-            background: ${l === currentLang ? '#667eea' : 'rgba(255,255,255,0.1)'};
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            white-space: nowrap;
-            font-family: inherit;
-          ">${LAYOUTS[l].name}</button>
-        `).join('')}
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        ${rows.map(row => `
-          <div style="display: flex; gap: 6px; justify-content: center;">
-            ${row.map(key => {
-              let style = 'background: #16213e; color: white; border: none; border-radius: 10px; height: 50px; flex: 1; max-width: 55px; font-size: 18px; cursor: pointer; box-shadow: 0 4px 0 #0a0a1a; user-select: none;';
-              if (key === 'Space') style += ' max-width: 180px; flex: 3;';
-              if (['Enter','←'].includes(key)) style += ' max-width: 80px; background: #e94560; font-size: 14px;';
-              if (key === 'Shift') {
-                style += ` max-width: 80px; background: ${isShift ? '#f59e0b' : '#48484a'}; font-size: 14px;`;
-              }
-              return `<button data-key="${key}" style="${style}">${key === 'Space' ? '␣' : key}</button>`;
-            }).join('')}
-          </div>
-        `).join('')}
-      </div>
-      <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
-        <button id="mlk-copy" style="background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px;">📋 Copy</button>
-        <button id="mlk-clear" style="background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px;">🗑️ Clear</button>
-        <button id="mlk-close" style="background: #374151; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px;">✕ Close</button>
-      </div>
-    `;
-    
-    // Language buttons
-    panel.querySelectorAll('button[data-lang]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        currentLang = btn.dataset.lang;
+  // ─── Drag ────────────────────────────────────────────────────────────────────
+  function attachDrag(handle) {
+    let ox, oy, startL, startT;
+    handle.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      const r = panel.getBoundingClientRect();
+      ox = e.clientX; oy = e.clientY;
+      startL = r.left; startT = r.top;
+
+      const onMove = (ev) => {
+        const maxL = window.innerWidth  - panel.offsetWidth;
+        const maxT = window.innerHeight - panel.offsetHeight;
+        panelX = Math.min(Math.max(0, startL + ev.clientX - ox), maxL);
+        panelY = Math.min(Math.max(0, startT + ev.clientY - oy), maxT);
+        panel.style.left   = panelX + 'px';
+        panel.style.top    = panelY + 'px';
+        panel.style.right  = 'auto';
+        panel.style.bottom = 'auto';
+      };
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        savePanelState();
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  }
+
+  // ─── Persist state ───────────────────────────────────────────────────────────
+  function savePanelState() {
+    if (typeof chrome === 'undefined' || !chrome.storage?.sync) return;
+    const s = { mlkLang: currentLang };
+    if (panelX !== null) { s.mlkPanelX = panelX; s.mlkPanelY = panelY; }
+    if (panelW !== null) { s.mlkPanelW = panelW; s.mlkPanelH = panelH; }
+    chrome.storage.sync.set(s);
+  }
+
+  // ─── Build keyboard DOM ──────────────────────────────────────────────────────
+  function buildKeyboard() {
+    panel.innerHTML = '';
+
+    // Drag handle
+    const handle = document.createElement('div');
+    handle.className = 'mlk-drag-handle';
+    handle.textContent = '· · · · ·';
+    panel.appendChild(handle);
+    attachDrag(handle);
+
+    // Language bar
+    const langBar = document.createElement('div');
+    langBar.className = 'mlk-lang-bar';
+    Object.keys(LAYOUTS).forEach(l => {
+      const btn = document.createElement('button');
+      btn.className = 'mlk-lang-btn' + (l === currentLang ? ' mlk-lang-btn--active' : '');
+      btn.textContent = LAYOUTS[l].name;
+      btn.addEventListener('mousedown', (e) => e.preventDefault()); // don't steal focus
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation(); // prevent outside-click handler from closing panel
+        currentLang = l;
         isShift = false;
-        renderKeyboard();
+        savePanelState();
+        buildKeyboard();
       });
+      langBar.appendChild(btn);
     });
-    
-    // Key buttons
-    panel.querySelectorAll('button[data-key]').forEach(key => {
-      key.addEventListener('click', () => {
-        const k = key.dataset.key;
-        if (!currentInput) return;
-        
-        if (k === '←') {
-          if (currentInput.value !== undefined) {
-            currentInput.value = currentInput.value.slice(0, -1);
-          } else {
-            currentInput.textContent = currentInput.textContent.slice(0, -1);
-          }
-        } else if (k === 'Space') {
-          insertText(' ');
-        } else if (k === 'Enter') {
-          insertText('\n');
-        } else if (k === 'Shift') {
-          isShift = !isShift;
-          renderKeyboard();
-          return;
-        } else {
-          insertText(k);
-          if (isShift) {
-            isShift = false;
-            renderKeyboard();
-          }
+    panel.appendChild(langBar);
+
+    // Keys
+    const keysDiv = document.createElement('div');
+    keysDiv.className = 'mlk-keys';
+    const rows = isShift ? LAYOUTS[currentLang].shift : LAYOUTS[currentLang].normal;
+    rows.forEach(row => {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'mlk-key-row';
+      row.forEach(key => {
+        const btn = document.createElement('button');
+        btn.dataset.key = key;
+        let cls = 'mlk-key';
+        if (key === 'Space')                    cls += ' mlk-key--space';
+        if (key === 'Enter' || key === '←')     cls += ' mlk-key--action';
+        if (key === 'Shift')                    cls += ' mlk-key--shift' + (isShift ? ' mlk-key--shift-active' : '');
+        btn.className = cls;
+        btn.textContent = key === 'Space' ? '␣' : key;
+        btn.addEventListener('mousedown', (e) => e.preventDefault()); // critical: don't blur input
+        btn.addEventListener('click', (e) => { e.stopPropagation(); handleKey(key); });
+        rowDiv.appendChild(btn);
+      });
+      keysDiv.appendChild(rowDiv);
+    });
+    panel.appendChild(keysDiv);
+
+    // Action bar
+    const bar = document.createElement('div');
+    bar.className = 'mlk-action-bar';
+
+    const mkBtn = (id, cls, label, handler) => {
+      const b = document.createElement('button');
+      b.id = id; b.className = cls; b.textContent = label;
+      b.addEventListener('mousedown', (e) => e.preventDefault());
+      b.addEventListener('click', (e) => { e.stopPropagation(); handler(e); });
+      return b;
+    };
+
+    bar.appendChild(mkBtn('mlk-copy',  'mlk-action-btn mlk-action-btn--copy',  '📋 Copy',  onCopy));
+    bar.appendChild(mkBtn('mlk-clear', 'mlk-action-btn mlk-action-btn--clear', '🗑️ Clear', onClear));
+    bar.appendChild(mkBtn('mlk-close', 'mlk-action-btn mlk-action-btn--close', '✕ Close',  (e) => { e.stopPropagation(); closePanel(); }));
+    panel.appendChild(bar);
+  }
+
+  // ─── Key handler ─────────────────────────────────────────────────────────────
+  function handleKey(key) {
+    if (!currentInput || !document.contains(currentInput)) return;
+
+    if (key === 'Shift') {
+      isShift = !isShift;
+      updateShiftState();
+      return;
+    }
+
+    if (key === '←') {
+      if ('value' in currentInput) {
+        const s = currentInput.selectionStart !== null ? currentInput.selectionStart : currentInput.value.length;
+        const e = currentInput.selectionEnd   !== null ? currentInput.selectionEnd   : currentInput.value.length;
+        if (s !== e) {
+          setInputValue(currentInput, currentInput.value.slice(0, s) + currentInput.value.slice(e));
+          currentInput.setSelectionRange(s, s);
+        } else if (s > 0) {
+          setInputValue(currentInput, currentInput.value.slice(0, s - 1) + currentInput.value.slice(s));
+          currentInput.setSelectionRange(s - 1, s - 1);
         }
-        
-        currentInput.dispatchEvent(new Event('input', {bubbles: true}));
-        currentInput.focus();
-      });
-    });
-    
-    // Action buttons
-    panel.querySelector('#mlk-copy').addEventListener('click', () => {
-      const text = currentInput?.value || currentInput?.textContent || '';
-      navigator.clipboard.writeText(text).then(() => {
-        showToast('Copied!');
-      });
-    });
-    
-    panel.querySelector('#mlk-clear').addEventListener('click', () => {
-      if (currentInput.value !== undefined) {
-        currentInput.value = '';
       } else {
-        currentInput.textContent = '';
+        deleteBeforeCaret();
       }
-      currentInput.dispatchEvent(new Event('input', {bubbles: true}));
-    });
-    
-    panel.querySelector('#mlk-close').addEventListener('click', toggleKeyboard);
-  }
-
-  function insertText(text) {
-    if (!currentInput) return;
-    
-    if (currentInput.value !== undefined) {
-      const start = currentInput.selectionStart || currentInput.value.length;
-      const end = currentInput.selectionEnd || currentInput.value.length;
-      currentInput.value = currentInput.value.substring(0, start) + text + currentInput.value.substring(end);
-      currentInput.setSelectionRange(start + text.length, start + text.length);
     } else {
-      currentInput.textContent += text;
+      const ch = key === 'Space' ? ' ' : key === 'Enter' ? '\n' : key;
+      if ('value' in currentInput) {
+        // Enter on a single-line input = submit (dispatch KeyboardEvent, don't insert \n)
+        if (key === 'Enter' && currentInput.tagName !== 'TEXTAREA') {
+          currentInput.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true, cancelable: true }));
+          currentInput.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true, cancelable: true }));
+          currentInput.dispatchEvent(new KeyboardEvent('keyup',   { key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true, cancelable: true }));
+          // Also try submitting the parent form
+          const form = currentInput.closest('form');
+          if (form) form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+          return;
+        }
+        const s = currentInput.selectionStart !== null ? currentInput.selectionStart : currentInput.value.length;
+        const e = currentInput.selectionEnd   !== null ? currentInput.selectionEnd   : currentInput.value.length;
+        setInputValue(currentInput, currentInput.value.slice(0, s) + ch + currentInput.value.slice(e));
+        try { currentInput.setSelectionRange(s + ch.length, s + ch.length); } catch {}
+      } else {
+        insertAtCaret(ch);
+      }
+      if (isShift && key !== 'Space' && key !== 'Enter') {
+        isShift = false;
+        updateShiftState();
+      }
+    }
+
+    currentInput.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true }));
+    currentInput.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  // ─── Shift update (no DOM rebuild) ───────────────────────────────────────────
+  function updateShiftState() {
+    const rows = isShift ? LAYOUTS[currentLang].shift : LAYOUTS[currentLang].normal;
+    const flat = rows.flat();
+    panel.querySelectorAll('button[data-key]').forEach((btn, i) => {
+      const k = flat[i];
+      if (!k) return;
+      btn.dataset.key  = k;
+      btn.textContent  = k === 'Space' ? '␣' : k;
+      if (k === 'Shift') btn.classList.toggle('mlk-key--shift-active', isShift);
+    });
+  }
+
+  // ─── Set input value (works with React/Vue/Angular) ──────────────────────────
+  function setInputValue(el, value) {
+    const nativeSetter = Object.getOwnPropertyDescriptor(
+      el.tagName === 'TEXTAREA' ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype,
+      'value'
+    );
+    if (nativeSetter && nativeSetter.set) {
+      nativeSetter.set.call(el, value);
+    } else {
+      el.value = value;
     }
   }
 
+  // ─── contenteditable helpers ─────────────────────────────────────────────────
+  function insertAtCaret(text) {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    range.deleteContents();
+    const node = document.createTextNode(text);
+    range.insertNode(node);
+    range.setStartAfter(node);
+    range.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
+  function deleteBeforeCaret() {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0);
+    if (!range.collapsed) { range.deleteContents(); return; }
+    if (range.startOffset === 0) return;
+    range.setStart(range.startContainer, range.startOffset - 1);
+    range.deleteContents();
+  }
+
+  // ─── Copy / Clear ─────────────────────────────────────────────────────────────
+  function onCopy() {
+    if (!currentInput) return;
+    const text = 'value' in currentInput ? currentInput.value : (currentInput.textContent || '');
+    copyToClipboard(text);
+  }
+
+  function onClear() {
+    if (!currentInput || !document.contains(currentInput)) return;
+    if ('value' in currentInput) {
+      currentInput.value = '';
+    } else {
+      currentInput.textContent = '';
+    }
+    currentInput.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  async function copyToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.cssText = 'position:fixed;opacity:0;pointer-events:none;top:0;left:0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch {}
+      ta.remove();
+    }
+    showToast('Copied!');
+  }
+
+  // ─── Toast ───────────────────────────────────────────────────────────────────
   function showToast(msg) {
-    const toast = document.createElement('div');
-    toast.textContent = msg;
-    toast.style.cssText = `
-      position: fixed;
-      bottom: 100px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #10b981;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 25px;
-      z-index: 2147483647;
-      font-size: 14px;
-    `;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 2000);
+    const t = document.createElement('div');
+    t.className = 'mlk-toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2000);
   }
 
-  // Close when clicking outside
+  // ─── Track inputs inside same-origin iframes ─────────────────────────────────
+  function attachToFrame(frame) {
+    try {
+      const doc = frame.contentDocument;
+      if (!doc) return;
+      doc.addEventListener('focusin', (e) => {
+        if (isInputEl(e.target)) {
+          if (currentInput && currentInput !== e.target) {
+            currentInput.classList.remove('mlk-active-target');
+          }
+          currentInput = e.target;
+          currentInput.classList.add('mlk-active-target');
+        }
+      });
+    } catch {} // cross-origin frames — silently skip
+  }
+
+  // ─── Close on outside click ───────────────────────────────────────────────────
+  // Only close when clicking truly outside — not on inputs, not on iframes
   document.addEventListener('click', (e) => {
-    if (panel.style.display === 'block' && !panel.contains(e.target) && e.target !== floatingBtn) {
-      panel.style.display = 'none';
-      floatingBtn.style.transform = 'scale(1)';
-    }
+    if (!panel.classList.contains('mlk-panel-open')) return;
+    if (panel.contains(e.target)) return;
+    if (floatingBtn.contains(e.target)) return;
+    if (e.target.tagName === 'IFRAME') return;
+    // Don't close if clicking an input/textarea/contenteditable
+    if (isInputEl(e.target)) return;
+    closePanel();
   });
+
+  // ─── Track inputs inside same-origin iframes ─────────────────────────────────
+  function attachToFrame(frame) {
+    try {
+      const doc = frame.contentDocument;
+      if (!doc) return;
+      doc.addEventListener('focusin', (e) => {
+        if (isInputEl(e.target)) {
+          if (currentInput && currentInput !== e.target) {
+            currentInput.classList.remove('mlk-active-target');
+          }
+          currentInput = e.target;
+          currentInput.classList.add('mlk-active-target');
+        }
+      });
+    } catch {} // cross-origin frames — silently skip
+  }
+
+  document.querySelectorAll('iframe').forEach(attachToFrame);
+  new MutationObserver((mutations) => {
+    mutations.forEach(m => m.addedNodes.forEach(n => {
+      if (n.tagName === 'IFRAME') attachToFrame(n);
+    }));
+  }).observe(document.body, { childList: true, subtree: true });
+
+  // ─── Restore saved state ──────────────────────────────────────────────────────
+  if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
+    chrome.storage.sync.get(
+      ['mlkLang', 'mlkPanelX', 'mlkPanelY', 'mlkPanelW', 'mlkPanelH'],
+      (data) => {
+        if (data.mlkLang && LAYOUTS[data.mlkLang]) currentLang = data.mlkLang;
+        if (data.mlkPanelX != null) { panelX = data.mlkPanelX; panelY = data.mlkPanelY; }
+        if (data.mlkPanelW != null) { panelW = data.mlkPanelW; panelH = data.mlkPanelH; }
+      }
+    );
+  }
 
 })();

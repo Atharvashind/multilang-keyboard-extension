@@ -5,7 +5,8 @@
   "description": "Type in English, Hindi, Marathi, Telugu, Tamil, Bengali on any website",
   "permissions": [
     "activeTab",
-    "clipboardWrite"
+    "clipboardWrite",
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -17,6 +18,9 @@
       ],
       "js": [
         "content.js"
+      ],
+      "css": [
+        "styles.css"
       ],
       "run_at": "document_idle"
     }

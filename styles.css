@@ -1,3 +1,216 @@
-.mlk-ext-panel {
-  font-family: 'Segoe UI', sans-serif !important;
+/* MultiLang Keyboard Extension Styles */
+
+#mlk-floating-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 2147483647;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+  transition: transform 0.2s, opacity 0.2s;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.mlk-btn-visible {
+  opacity: 1 !important;
+  pointer-events: all !important;
+}
+
+.mlk-btn-pressed {
+  transform: scale(0.9) !important;
+}
+
+/* Panel — hidden by default, shown via .mlk-panel-open */
+#mlk-keyboard-panel {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: 380px;
+  min-width: 280px;
+  min-height: 220px;
+  max-width: 98vw;
+  background: #1a1a2e;
+  border-radius: 16px;
+  padding: 14px;
+  z-index: 2147483646;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  font-family: 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+  resize: both;
+  overflow: auto;
+  /* hidden until .mlk-panel-open is added */
+  display: none;
+}
+
+#mlk-keyboard-panel.mlk-panel-open {
+  display: block;
+  animation: mlk-slide-in 0.15s ease-out forwards;
+}
+
+#mlk-keyboard-panel.mlk-panel-closing {
+  animation: mlk-slide-out 0.12s ease-in forwards;
+}
+
+@keyframes mlk-slide-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+@keyframes mlk-slide-out {
+  from { opacity: 1; transform: translateY(0)   scale(1);    }
+  to   { opacity: 0; transform: translateY(10px) scale(0.97); }
+}
+
+/* Drag handle */
+.mlk-drag-handle {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 11px;
+  letter-spacing: 2px;
+  cursor: grab;
+  padding-bottom: 8px;
+  user-select: none;
+}
+
+.mlk-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Language bar */
+.mlk-lang-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.mlk-lang-bar::-webkit-scrollbar { display: none; }
+
+.mlk-lang-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.mlk-lang-btn--active {
+  background: #667eea;
+}
+
+/* Key rows */
+.mlk-keys {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mlk-key-row {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+}
+
+.mlk-key {
+  background: #16213e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  height: 44px;
+  flex: 1;
+  min-width: 24px;
+  max-width: 52px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #0a0a1a;
+  user-select: none;
+  transition: background 0.1s, transform 0.05s;
+}
+
+.mlk-key:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #0a0a1a;
+}
+
+.mlk-key--space {
+  max-width: 200px;
+  flex: 4;
+}
+
+.mlk-key--action {
+  max-width: 72px;
+  background: #e94560;
+  font-size: 13px;
+}
+
+.mlk-key--shift {
+  max-width: 72px;
+  background: #48484a;
+  font-size: 13px;
+}
+
+.mlk-key--shift-active {
+  background: #f59e0b !important;
+}
+
+/* Action bar */
+.mlk-action-bar {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.mlk-action-btn {
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.mlk-action-btn--copy  { background: #10b981; }
+.mlk-action-btn--clear { background: #ef4444; }
+.mlk-action-btn--close { background: #374151; }
+
+/* Toast */
+.mlk-toast {
+  position: fixed;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #10b981;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 20px;
+  z-index: 2147483647;
+  font-size: 13px;
+  font-family: 'Segoe UI', sans-serif;
+  pointer-events: none;
+}
+
+/* Active input highlight */
+.mlk-active-target {
+  outline: 2px solid #667eea !important;
+  outline-offset: 2px !important;
 }
