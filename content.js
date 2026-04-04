@@ -36,6 +36,11 @@
       name: 'বাংলা',
       normal: [['্','১','২','৩','৪','৫','৬','৭','৮','৯','০','-','ৃ','←'],['ৌ','ৈ','া','ী','ূ','ব','হ','গ','দ','জ','ড','়'],['ো','ে','্','ি','ু','প','র','ক','ত','চ','ট','Enter'],['Shift','ঁ','ম','ন','ভ','ল','স',',','.','য','Shift'],['Space']],
       shift:  [['ঔ','ঐ','আ','ঈ','ঊ','ভ','ঃ','গ','ধ','ঝ','ঢ','←'],['ও','এ','অ','ই','উ','ফ','র','খ','থ','ছ','ঠ','Enter'],['Shift','ঁ','ম','ন','ভ','ল','শ','ষ','।','য়','Shift'],['Space']]
+    },
+    gujarati: {
+      name: 'ગુજરાતી',
+      normal: [['ૈ','૧','૨','૩','૪','૫','૬','૭','૮','૯','૦','-','ૃ','←'],['ૌ','ૈ','ા','ી','ૂ','બ','હ','ગ','દ','જ','ડ','઼'],['ો','ે','્','િ','ુ','પ','ર','ક','ત','ચ','ટ','Enter'],['Shift','ં','મ','ન','વ','લ','સ',',','.','ય','Shift'],['Space']],
+      shift:  [['ઑ','ઍ','઼','ર્','જ્ઞ','ત્ર','ક્ષ','શ્ર','(','(','ઃ','ઋ','←'],['ઔ','ઐ','આ','ઈ','ઊ','ભ','ઙ','ઘ','ધ','ઝ','ઢ'],['ઓ','એ','અ','ઇ','ઉ','ફ','઱','ખ','થ','છ','ઠ','Enter'],['Shift','ઁ','મ','ન','વ','ળ','શ','ષ','।','ય','Shift'],['Space']]
     }
   };
 
@@ -50,9 +55,74 @@
   const floatingBtn = document.createElement('div');
   floatingBtn.id = 'mlk-floating-btn';
   floatingBtn.innerHTML = '⌨️';
+  floatingBtn.title = 'MultiLang Keyboard';
   floatingBtn.classList.add('mlk-btn-visible');
-  floatingBtn.addEventListener('mousedown', (e) => e.preventDefault()); // don't blur active input
-  floatingBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleKeyboard(); });
+
+  // Restore saved button position
+  if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
+    chrome.storage.sync.get(['mlkBtnX', 'mlkBtnY'], (data) => {
+      if (data.mlkBtnX != null) {
+        floatingBtn.style.left   = data.mlkBtnX + 'px';
+        floatingBtn.style.top    = data.mlkBtnY + 'px';
+        floatingBtn.style.right  = 'auto';
+        floatingBtn.style.bottom = 'auto';
+      }
+    });
+  }
+
+  let btnDragged = false;
+
+  floatingBtn.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    btnDragged = false;
+
+    const rect = floatingBtn.getBoundingClientRect();
+    const ox = e.clientX - rect.left;
+    const oy = e.clientY - rect.top;
+
+    floatingBtn.classList.add('mlk-btn-dragging');
+
+    const onMove = (ev) => {
+      btnDragged = true;
+      const x = Math.min(Math.max(0, ev.clientX - ox), window.innerWidth  - floatingBtn.offsetWidth);
+      const y = Math.min(Math.max(0, ev.clientY - oy), window.innerHeight - floatingBtn.offsetHeight);
+      floatingBtn.style.left   = x + 'px';
+      floatingBtn.style.top    = y + 'px';
+      floatingBtn.style.right  = 'auto';
+      floatingBtn.style.bottom = 'auto';
+    };
+
+    const onUp = (ev) => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      floatingBtn.classList.remove('mlk-btn-dragging');
+
+      if (btnDragged) {
+        // Snap to nearest edge
+        const bx = floatingBtn.getBoundingClientRect();
+        const midX = bx.left + bx.width / 2;
+        const snapLeft = midX < window.innerWidth / 2;
+        const finalX = snapLeft ? 12 : window.innerWidth - floatingBtn.offsetWidth - 12;
+        const finalY = Math.min(Math.max(12, bx.top), window.innerHeight - floatingBtn.offsetHeight - 12);
+        floatingBtn.style.left   = finalX + 'px';
+        floatingBtn.style.top    = finalY + 'px';
+        floatingBtn.style.right  = 'auto';
+        floatingBtn.style.bottom = 'auto';
+        // Save position
+        if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
+          chrome.storage.sync.set({ mlkBtnX: finalX, mlkBtnY: finalY });
+        }
+      } else {
+        // It was a tap/click — toggle keyboard
+        toggleKeyboard();
+      }
+      ev.stopPropagation();
+    };
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+
   document.body.appendChild(floatingBtn);
 
   // ─── Panel ───────────────────────────────────────────────────────────────────
@@ -203,24 +273,35 @@
     panel.appendChild(handle);
     attachDrag(handle);
 
-    // Language bar
-    const langBar = document.createElement('div');
-    langBar.className = 'mlk-lang-bar';
+    // Language selector (dropdown)
+    const langSelector = document.createElement('div');
+    langSelector.className = 'mlk-lang-selector';
+
+    const langLabel = document.createElement('span');
+    langLabel.className = 'mlk-lang-label';
+    langLabel.textContent = '🌐 Language';
+
+    const langSelect = document.createElement('select');
+    langSelect.className = 'mlk-lang-select';
     Object.keys(LAYOUTS).forEach(l => {
-      const btn = document.createElement('button');
-      btn.className = 'mlk-lang-btn' + (l === currentLang ? ' mlk-lang-btn--active' : '');
-      btn.textContent = LAYOUTS[l].name;
-      btn.addEventListener('mousedown', (e) => e.preventDefault()); // don't steal focus
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation(); // prevent outside-click handler from closing panel
-        currentLang = l;
-        isShift = false;
-        savePanelState();
-        buildKeyboard();
-      });
-      langBar.appendChild(btn);
+      const opt = document.createElement('option');
+      opt.value = l;
+      opt.textContent = LAYOUTS[l].name;
+      if (l === currentLang) opt.selected = true;
+      langSelect.appendChild(opt);
     });
-    panel.appendChild(langBar);
+    langSelect.addEventListener('mousedown', (e) => e.stopPropagation());
+    langSelect.addEventListener('change', (e) => {
+      e.stopPropagation();
+      currentLang = langSelect.value;
+      isShift = false;
+      savePanelState();
+      buildKeyboard();
+    });
+
+    langSelector.appendChild(langLabel);
+    langSelector.appendChild(langSelect);
+    panel.appendChild(langSelector);
 
     // Keys
     const keysDiv = document.createElement('div');

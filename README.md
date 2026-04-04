@@ -1,103 +1,109 @@
 # MultiLang Keyboard Extension
 
-A browser extension that enables typing in multiple Indian languages (Hindi, Marathi, Telugu, Tamil, Bengali) plus English on any website using a virtual keyboard interface.
+A free, open-source browser extension that lets you type in 7 Indian languages on any website using a floating virtual keyboard.
 
-## Features
-
-- **Virtual Keyboard**: Click the floating keyboard icon (⌨️) that appears on text input fields
-- **Multi-Language Support**: Switch between 6 languages instantly
-- **Intuitive Interface**: Visual keyboard with proper layouts for each language
-- **Text Manipulation**: Backspace, Enter, Space, Shift functionality
-- **Clipboard Integration**: Copy text to clipboard directly from the keyboard
-- **Clear Function**: Quickly clear all text in the input field
-- **Responsive Design**: Works on any website with text inputs
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ## Supported Languages
 
-- 🇺🇸 English
-- 🇮🇳 हिन्दी (Hindi)
-- 🇮🇳 मराठी (Marathi)
-- 🇮🇳 తెలుగు (Telugu)
-- 🇮🇳 தமிழ் (Tamil)
-- 🇮🇳 বাংলা (Bengali)
+| Language | Script |
+|---|---|
+| English | Latin |
+| हिन्दी (Hindi) | Devanagari |
+| मराठी (Marathi) | Devanagari |
+| తెలుగు (Telugu) | Telugu |
+| தமிழ் (Tamil) | Tamil |
+| বাংলা (Bengali) | Bengali |
+| ગુજરાતી (Gujarati) | Gujarati |
+
+## Features
+
+- **Floating keyboard button** — always visible, drag it anywhere on screen, snaps to the nearest edge
+- **Virtual keyboard** — full layout with Shift, Backspace, Space, and Enter support
+- **Language selector** — clean dropdown to switch between 7 languages instantly
+- **Draggable & resizable panel** — move the keyboard anywhere, resize it by dragging the corner
+- **Persistent state** — remembers your last language, panel position, and panel size across pages
+- **Works everywhere** — inputs, textareas, contenteditable elements, Gmail, YouTube, and more
+- **Framework compatible** — works with React, Vue, Angular apps via native input value setter
+- **Clipboard support** — copy typed text with one click, with execCommand fallback
+- **Open/close animation** — smooth slide-in/out transitions
+- **Active input highlight** — blue outline shows which field is targeted
 
 ## Installation
 
-### Chrome/Edge
+### Chrome / Edge (Developer Mode)
 1. Download or clone this repository
-2. Open Chrome and go to `chrome://extensions/`
-3. Enable "Developer mode" in the top right
-4. Click "Load unpacked" and select the extension folder
-5. The extension will be installed and ready to use
+2. Go to `chrome://extensions/`
+3. Enable **Developer mode** (top right)
+4. Click **Load unpacked** and select the extension folder
 
 ### Firefox
-1. Download or clone this repository
-2. Open Firefox and go to `about:debugging`
-3. Click "This Firefox" in the sidebar
-4. Click "Load Temporary Add-on"
-5. Select the `manifest.json` file from the extension folder
-6. The extension will be temporarily installed
+1. Go to `about:debugging` → **This Firefox**
+2. Click **Load Temporary Add-on**
+3. Select `manifest.json` from the extension folder
 
 ## Usage
 
-1. Navigate to any website with text input fields
-2. Click on a text input (input, textarea, or contenteditable element)
-3. A floating keyboard button (⌨️) will appear in the bottom-right corner
-4. Click the keyboard button to open the virtual keyboard
-5. Select your desired language from the top row
-6. Type using the virtual keys
-7. Use special keys:
-   - **Shift**: Toggle uppercase/lowercase
-   - **←**: Backspace
-   - **Enter**: New line
-   - **␣**: Space
-   - **📋 Copy**: Copy text to clipboard
-   - **🗑️ Clear**: Clear all text
-   - **✕ Close**: Close keyboard
+1. Go to any website with a text field
+2. Click the **⌨️ floating button** (bottom-right by default)
+3. The keyboard panel opens — select your language from the dropdown
+4. Type using the virtual keys
+5. Use **📋 Copy** to copy text, **🗑️ Clear** to clear, **✕ Close** to dismiss
+
+### Tips
+- Drag the ⌨️ button to reposition it — it snaps to the left or right edge
+- Drag the `· · · · ·` handle at the top of the keyboard to move the panel
+- Drag the bottom-right corner of the panel to resize it
+- Your language choice and panel position are saved automatically
 
 ## Permissions
 
-The extension requires the following permissions:
-- `activeTab`: To interact with the current tab
-- `clipboardWrite`: To copy text to clipboard
-- `<all_urls>`: To work on any website
+| Permission | Reason |
+|---|---|
+| `activeTab` | Interact with the current tab |
+| `clipboardWrite` | Copy text to clipboard |
+| `storage` | Save language preference and panel position |
+| `<all_urls>` | Work on any website |
 
-## Files Structure
+## Project Structure
 
-- `manifest.json`: Extension manifest file
-- `content.js`: Main extension logic and keyboard implementation
-- `popup.html`: Extension popup interface
-- `styles.css`: Additional styling
+```
+├── manifest.json      # Extension manifest (MV3)
+├── content.js         # All keyboard logic injected into pages
+├── styles.css         # All UI styles (injected as content script CSS)
+├── popup.html         # Extension popup
+├── icon16.png
+├── icon48.png
+├── icon128.png
+└── LICENSE
+```
 
-## Development
+## Adding a New Language
 
-To modify the extension:
-1. Make changes to the source files
-2. Reload the extension in the browser's extension manager
-3. Test on various websites
-
-### Adding New Languages
-
-To add support for additional languages:
-1. Add a new layout object in `LAYOUTS` in `content.js`
-2. Define `normal` and `shift` key arrays
-3. Update the language selection buttons
+1. Open `content.js`
+2. Add a new entry to the `LAYOUTS` object:
+```js
+yourlang: {
+  name: 'Display Name',
+  normal: [/* rows of keys */],
+  shift:  [/* rows of keys in shift state */]
+}
+```
+3. Each row is an array of key strings. Use `'←'`, `'Enter'`, `'Shift'`, `'Space'` for special keys.
 
 ## Browser Compatibility
 
 - Chrome 88+
 - Edge 88+
-- Firefox 109+ (with manifest v3 support)
+- Firefox 109+
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit issues and pull requests.
-
-## ScreenShot 
-
-<img width="949" height="374" alt="ML_keY_board" src="https://github.com/user-attachments/assets/f5b96a35-ae48-4279-b70b-f9cdedf745b0" />
-
+Contributions are welcome. Feel free to open issues or pull requests for:
+- New language layouts
+- Bug fixes
+- UI improvements
 
 ## License
 
-This project is open source. Please check the license file for details.
+MIT — see [LICENSE](LICENSE)
