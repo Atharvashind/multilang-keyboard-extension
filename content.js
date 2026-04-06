@@ -61,14 +61,17 @@
   floatingBtn.id = 'mlk-floating-btn';
   floatingBtn.innerHTML = '⌨️';
   floatingBtn.title = 'MultiLang Keyboard';
-  floatingBtn.classList.add('mlk-btn-visible');
+  floatingBtn.classList.add('mlk-btn-visible'); // always visible — kept for backwards compat
 
   // Restore saved button position
   if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
     chrome.storage.sync.get(['mlkBtnX', 'mlkBtnY'], (data) => {
       if (data.mlkBtnX != null) {
-        floatingBtn.style.left   = data.mlkBtnX + 'px';
-        floatingBtn.style.top    = data.mlkBtnY + 'px';
+        // Validate position is still on-screen (window size may have changed)
+        const x = Math.min(Math.max(0, data.mlkBtnX), window.innerWidth  - 60);
+        const y = Math.min(Math.max(0, data.mlkBtnY), window.innerHeight - 60);
+        floatingBtn.style.left   = x + 'px';
+        floatingBtn.style.top    = y + 'px';
         floatingBtn.style.right  = 'auto';
         floatingBtn.style.bottom = 'auto';
       }
