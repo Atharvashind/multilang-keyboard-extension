@@ -516,39 +516,21 @@
           }
           currentInput = e.target;
           currentInput.classList.add('mlk-active-target');
+          floatingBtn.classList.add('mlk-btn-visible');
         }
       });
     } catch {} // cross-origin frames — silently skip
   }
 
   // ─── Close on outside click ───────────────────────────────────────────────────
-  // Only close when clicking truly outside — not on inputs, not on iframes
   document.addEventListener('click', (e) => {
     if (!panel.classList.contains('mlk-panel-open')) return;
     if (panel.contains(e.target)) return;
     if (floatingBtn.contains(e.target)) return;
     if (e.target.tagName === 'IFRAME') return;
-    // Don't close if clicking an input/textarea/contenteditable
     if (isInputEl(e.target)) return;
     closePanel();
   });
-
-  // ─── Track inputs inside same-origin iframes ─────────────────────────────────
-  function attachToFrame(frame) {
-    try {
-      const doc = frame.contentDocument;
-      if (!doc) return;
-      doc.addEventListener('focusin', (e) => {
-        if (isInputEl(e.target)) {
-          if (currentInput && currentInput !== e.target) {
-            currentInput.classList.remove('mlk-active-target');
-          }
-          currentInput = e.target;
-          currentInput.classList.add('mlk-active-target');
-        }
-      });
-    } catch {} // cross-origin frames — silently skip
-  }
 
   document.querySelectorAll('iframe').forEach(attachToFrame);
   new MutationObserver((mutations) => {
