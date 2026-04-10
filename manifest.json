@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "MultiLang Keyboard",
   "version": "2.0.0",
-  "description": "Type in English, Hindi, Marathi, Telugu, Tamil, Bengali, Gujarati, Punjabi on any website",
+  "description": "Type in English, Hindi, Marathi, Telugu, Tamil, Bengali, Gujarati, Punjabi, Kannada on any website",
   "permissions": [
     "activeTab",
     "clipboardWrite",

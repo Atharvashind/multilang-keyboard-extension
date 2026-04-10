@@ -16,6 +16,7 @@ A free, open-source browser extension that lets you type in 7 Indian languages o
 | বাংলা (Bengali) | Bengali |
 | ગુજરાતી (Gujarati) | Gujarati |
 | ਪੰਜਾਬੀ (Punjabi) | Gurmukhi |
+| ಕನ್ನಡ (Kannada) | Kannada |
 
 ## Features
 
