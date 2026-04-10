@@ -170,10 +170,11 @@
       if (panel.contains(active)) return;
       if (isInputEl(active)) return;
       if (activeIsInFrame()) return;
+      // Never clear while panel is open — keys must keep working
       if (panel.classList.contains('mlk-panel-open') || panel.classList.contains('mlk-panel-closing')) return;
       if (currentInput) currentInput.classList.remove('mlk-active-target');
       currentInput = null;
-      floatingBtn.classList.remove('mlk-btn-visible'); // hide when no input focused
+      floatingBtn.classList.remove('mlk-btn-visible');
     }, 200);
   });
 
@@ -211,7 +212,6 @@
 
   function closePanel() {
     if (!panel.classList.contains('mlk-panel-open')) return;
-    // Save size before closing (user may have resized)
     const w = panel.offsetWidth, h = panel.offsetHeight;
     if (w > 0) { panelW = w; panelH = h; }
     savePanelState();
@@ -219,11 +219,14 @@
     panel.classList.add('mlk-panel-closing');
     const done = () => {
       panel.classList.remove('mlk-panel-open', 'mlk-panel-closing');
+      // Only clear currentInput if focus is truly gone from all inputs
       const active = document.activeElement;
-      if (!active || !active.matches('input, textarea, [contenteditable="true"]')) {
+      if (!active || !active.matches('input, textarea, [contenteditable="true"], [contenteditable=""]')) {
         if (currentInput) currentInput.classList.remove('mlk-active-target');
         currentInput = null;
+        floatingBtn.classList.remove('mlk-btn-visible');
       }
+      // If still on an input, keep button visible
     };
     panel.addEventListener('animationend', done, { once: true });
     setTimeout(() => { if (panel.classList.contains('mlk-panel-closing')) done(); }, 250);
@@ -523,12 +526,19 @@
   }
 
   // ─── Close on outside click ───────────────────────────────────────────────────
+  // Only close on a deliberate outside click — never on inputs or iframes
   document.addEventListener('click', (e) => {
     if (!panel.classList.contains('mlk-panel-open')) return;
     if (panel.contains(e.target)) return;
     if (floatingBtn.contains(e.target)) return;
     if (e.target.tagName === 'IFRAME') return;
     if (isInputEl(e.target)) return;
+    // Check ancestors too — click may land on a child of an input wrapper
+    let el = e.target;
+    while (el && el !== document.body) {
+      if (isInputEl(el)) return;
+      el = el.parentElement;
+    }
     closePanel();
   });
 
