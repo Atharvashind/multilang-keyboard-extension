@@ -106,6 +106,13 @@ Contributions are welcome. Feel free to open issues or pull requests for:
 - Bug fixes
 - UI improvements
 
+## Images
+<img width="953" height="445" alt="extenction1" src="https://github.com/user-attachments/assets/50929bc6-bb1d-4666-9a11-7657f20998ba" />
+
+<img width="647" height="299" alt="extenction2" src="https://github.com/user-attachments/assets/9e9a68a5-26c1-4bb1-9be5-28767c6623c1" />
+
+
+
 ## License
 
 MIT — see [LICENSE](LICENSE)
