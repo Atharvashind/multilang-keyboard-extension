@@ -61,8 +61,7 @@
   floatingBtn.id = 'mlk-floating-btn';
   floatingBtn.innerHTML = '⌨️';
   floatingBtn.title = 'MultiLang Keyboard';
-  floatingBtn.classList.add('mlk-btn-visible'); // always visible — kept for backwards compat
-
+  floatingBtn.classList.remove('mlk-btn-visible'); // start hidden, shown on input focus
   // Restore saved button position
   if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
     chrome.storage.sync.get(['mlkBtnX', 'mlkBtnY'], (data) => {
@@ -156,6 +155,7 @@
       }
       currentInput = e.target;
       currentInput.classList.add('mlk-active-target');
+      floatingBtn.classList.add('mlk-btn-visible'); // show when input focused
     }
   });
 
@@ -165,10 +165,10 @@
       if (panel.contains(active)) return;
       if (isInputEl(active)) return;
       if (activeIsInFrame()) return;
-      // Panel is open — never clear currentInput while keyboard is showing
       if (panel.classList.contains('mlk-panel-open') || panel.classList.contains('mlk-panel-closing')) return;
       if (currentInput) currentInput.classList.remove('mlk-active-target');
       currentInput = null;
+      floatingBtn.classList.remove('mlk-btn-visible'); // hide when no input focused
     }, 200);
   });
 
@@ -201,6 +201,7 @@
     buildKeyboard();
     panel.classList.add('mlk-panel-open');
     floatingBtn.classList.add('mlk-btn-pressed');
+    floatingBtn.classList.add('mlk-btn-visible'); // keep visible while panel open
   }
 
   function closePanel() {
